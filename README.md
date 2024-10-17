@@ -34,7 +34,7 @@ This file serves as both a template for your project readme and as a readme for 
 
 2. Rename project directory, this name will also be the name of the new venv:
    ```bash
-   mv project_name your_project_name
+   mv template_projects your_project_name
    cd your_project_name
    ```
 
@@ -49,7 +49,7 @@ This file serves as both a template for your project readme and as a readme for 
    ./setup_venv.py
    ```
 
-5. If you need to, you can activate the virtual environment manually:
+5. Activate the virtual environment:
 
    ```bash
    source project_name_venv/bin/activate
