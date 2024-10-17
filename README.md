@@ -29,8 +29,9 @@ This file serves as both a template for your project readme and as a readme for 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/username/project_name.git
+   git clone git@github.com:darjazafirovic/template_projects.git
    ```
+
 2. Rename project directory, this name will also be the name of the new venv:
    ```bash
    mv project_name your_project_name
@@ -48,7 +49,7 @@ This file serves as both a template for your project readme and as a readme for 
    ./setup_venv.py
    ```
 
-5. (Optional) If you need to, you can activate the virtual environment manually:
+5. If you need to, you can activate the virtual environment manually:
 
    ```bash
    source project_name_venv/bin/activate
@@ -56,6 +57,11 @@ This file serves as both a template for your project readme and as a readme for 
    
 6. This template has a very permissive license. The project is dedicated to the public domain under the Unlicense. Choose an appropriate license for your project and modify the LICENSE file. **If you leave the LICENSE file as is, your work will be in the public domain.**
 
+
+7. If you want to initialize a new repo, you can use the script setup_git.py. The script will init a new local repo, ask if you want to link it to a remote, and create an initial commit:
+   ```bash
+   ./setup_git.py
+   ```
 ---
 
 ## Usage
