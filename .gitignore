@@ -1,0 +1,14 @@
+# Ignore virtual environments
+*/venv/
+*_venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Other potential unnecessary files
+*.log
+
+# Ignore IDE settings
+.idea/
