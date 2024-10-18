@@ -3,6 +3,8 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
+
 
 def install_package(package_name):
     """Installs the required package using apt."""
@@ -14,12 +16,12 @@ def install_package(package_name):
         print(f"Error: Failed to install {package_name}. Please install it manually.")
         sys.exit(1)
 
+
 def check_and_install_python_env():
     """Ensures python3-venv and python3-pip are installed correctly."""
     try:
         # Check if python3-venv is installed by attempting to create a dummy virtual environment
         subprocess.run(['python3', '-m', 'venv', '--without-pip', '/tmp/test_env'], check=True)
-        # Clean up the dummy environment
         subprocess.run(['rm', '-rf', '/tmp/test_env'])
     except subprocess.CalledProcessError:
         print("python3-venv is not installed. Installing it now...")
@@ -32,24 +34,36 @@ def check_and_install_python_env():
         print("pip is not installed. Installing pip...")
         install_package("python3-pip")
 
-def create_and_activate_venv():
+
+def rename_directories():
+    """Renames the 'my_project' and 'my_tests' directories based on the parent directory name."""
+    parent_dir = os.path.basename(os.getcwd())  # Get the name of the current directory
+    project_dir = 'my_project'
+    tests_dir = 'my_tests'
+
+    # Rename 'my_project' to 'parent_dir'
+    if os.path.exists(project_dir):
+        new_project_dir = parent_dir
+        os.rename(project_dir, new_project_dir)
+        print(f"Renamed '{project_dir}' to '{new_project_dir}'")
+
+    # Rename 'my_tests' to 'parent_dir_tests'
+    if os.path.exists(tests_dir):
+        new_tests_dir = f"{parent_dir}_tests"
+        os.rename(tests_dir, new_tests_dir)
+        print(f"Renamed '{tests_dir}' to '{new_tests_dir}'")
+
+
+def create_venv():
     """Creates the virtual environment."""
     project_name = os.path.basename(os.getcwd())
     venv_path = os.path.join(os.getcwd(), f"{project_name}_venv")
 
-    # Ensure required packages are installed
     check_and_install_python_env()
 
-    # Ensure venv_path is not empty and correct
-    if not venv_path:
-        print("Error: Virtual environment directory path is invalid.")
-        sys.exit(1)
-
-    # Create the virtual environment if it doesn't exist
     if not os.path.exists(venv_path):
         print(f"Creating virtual environment '{project_name}_venv'...")
         try:
-            # Create the virtual environment
             subprocess.run([sys.executable, "-m", "venv", venv_path], check=True)
             print(f"Virtual environment '{project_name}_venv' created successfully!")
         except subprocess.CalledProcessError as e:
@@ -58,31 +72,38 @@ def create_and_activate_venv():
     else:
         print(f"Virtual environment '{project_name}_venv' already exists.")
 
-    # Check if the activate script is present
     activate_script = os.path.join(venv_path, 'bin', 'activate')
     if os.path.exists(activate_script):
-        print(f"To activate the virtual environment manually, run:\nsource {activate_script}")
+        print(f"To activate the virtual environment, run:\nsource {activate_script}")
     else:
-        print("Error: Could not find the activate script. The virtual environment may not have been created successfully.")
+        print(
+            "Error: Could not find the activate script. The virtual environment may not have been created successfully.")
+
 
 def install_requirements():
     """Installs dependencies from requirements.txt."""
-    requirements_file = os.path.join(os.getcwd(), 'requirements.txt')
-    if os.path.exists(requirements_file):
+    requirements_file = Path(os.getcwd()) / 'requirements.txt'
+    if requirements_file.exists():
         print("Installing dependencies from requirements.txt...")
         try:
-            subprocess.run([os.path.join(os.getcwd(), f"{os.path.basename(os.getcwd())}_venv", 'bin', 'pip'), 'install', '-r', requirements_file], check=True)
+            subprocess.run(
+                [str(Path(os.getcwd()) / f"{os.path.basename(os.getcwd())}_venv" / 'bin' / 'pip'), 'install', '-r',
+                 str(requirements_file)], check=True)
         except subprocess.CalledProcessError as e:
             print(f"Error during dependencies installation: {e}")
             sys.exit(1)
     else:
         print("No requirements.txt file found. Skipping dependency installation.")
 
-if __name__ == "__main__":
-    # Step 1: Create and activate the virtual environment
-    create_and_activate_venv()
 
-    # Step 2: Install dependencies if requirements.txt exists
+if __name__ == "__main__":
+    # Step 1: Rename the project and test directories
+    rename_directories()
+
+    # Step 2: Create the virtual environment
+    create_venv()
+
+    # Step 3: Install dependencies if requirements.txt exists
     install_requirements()
 
     print("Virtual environment setup complete.")
